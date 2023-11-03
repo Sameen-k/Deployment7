@@ -1,7 +1,7 @@
 pipeline {
   agent {label 'awsDeploy2'}
   environment{
-      DOCKERHUB_CREDENTIALS = credentials('tsanderson77-dockerhub')
+      DOCKERHUB_CREDENTIALS = credentials('sameenk-dockerhub')
       }
    stages {
      
@@ -27,19 +27,22 @@ pipeline {
    }
      
     stage ('Build') {
+      agent {label 'awsDeploy2'}
       steps {
-          sh 'docker build -t tsanderson77/bankapp11 .'
+          sh 'docker build -t sameenk/bankapp7 .'
     }
 }
      stage ('Login') {
+        agent {label 'awsDeploy2'}
         steps {
           sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
       }
 }
 
      stage ('Push') {
+        agent {label 'awsDeploy2'}
         steps {
-            sh 'docker push tsanderson77/bankapp11'
+            sh 'docker push sameenk/bankapp7'
   }
      }
 
