@@ -24,13 +24,13 @@ resource "aws_cloudwatch_log_group" "log-group" {
 # Task Definition
 
 resource "aws_ecs_task_definition" "aws-ecs-task" {
-  family = "url-task"
+  family = "bank-task"
 
   container_definitions = <<EOF
   [
   {
-      "name": "url-container",
-      "image": "tsanderson77/bankapp11:latest",
+      "name": "bank-container",
+      "image": "sameenk/bankapp7:latest",
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -41,7 +41,7 @@ resource "aws_ecs_task_definition" "aws-ecs-task" {
       },
       "portMappings": [
         {
-          "containerPort": 5000
+          "containerPort": 8000
         }
       ]
     }
@@ -52,14 +52,14 @@ resource "aws_ecs_task_definition" "aws-ecs-task" {
   network_mode             = "awsvpc"
   memory                   = "1024"
   cpu                      = "512"
-  execution_role_arn       = "arn:aws:iam::156156311593:role/ecsTaskExecutionRole"
-  task_role_arn            = "arn:aws:iam::156156311593:role/ecsTaskExecutionRole"
+  execution_role_arn       = "arn:aws:iam::380330819214:role/ecsTaskExecutionRole"
+  task_role_arn            = "arn:aws:iam::380330819214:role/ecsTaskExecutionRole"
 
 }
 
 # ECS Service
 resource "aws_ecs_service" "aws-ecs-service" {
-  name                 = "url-ecs-service"
+  name                 = "bank-ecs-service"
   cluster              = aws_ecs_cluster.aws-ecs-cluster.id
   task_definition      = aws_ecs_task_definition.aws-ecs-task.arn
   launch_type          = "FARGATE"
@@ -78,8 +78,8 @@ resource "aws_ecs_service" "aws-ecs-service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.bank-app.arn
-    container_name   = "url-container"
-    container_port   = 5000
+    container_name   = "bank-container"
+    container_port   = 8000
   }
 
 }
