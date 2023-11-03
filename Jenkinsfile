@@ -6,6 +6,7 @@ pipeline {
    stages {
      
     stage ('Test') {
+      agent {label 'awsDeploy2'}
       steps {
         sh '''#!/bin/bash
         python3.7 -m venv test
