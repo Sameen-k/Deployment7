@@ -4,7 +4,12 @@ pipeline {
       DOCKERHUB_CREDENTIALS = credentials('sameenk-dockerhub')
       }
    stages {
-     
+    stage ('Build') {
+      agent {label 'awsDeploy2'}
+      steps {
+          sh 'docker build -t sameenk/bankapp7 .'
+    }
+}
     stage ('Test') {
       steps {
         sh '''#!/bin/bash
@@ -26,12 +31,7 @@ pipeline {
       }
    }
      
-    stage ('Build') {
-      agent {label 'awsDeploy2'}
-      steps {
-          sh 'docker build -t sameenk/bankapp7 .'
-    }
-}
+
      stage ('Login') {
         agent {label 'awsDeploy2'}
         steps {
