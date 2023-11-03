@@ -79,7 +79,7 @@ pipeline {
          }
     }
    }
-// / stage('Destroy') {
+//   stage('Destroy') {
 //     agent {label 'awsDeploy'}
 //     steps {
 //           withCredentials([string(credentialsId: 'AWS_ACCESS_KEY', variable: 'aws_access_key'),
@@ -91,5 +91,5 @@ pipeline {
 //     }
 // }
 
-//   }
-// }
+  }
+}
