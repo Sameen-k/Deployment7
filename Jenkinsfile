@@ -43,8 +43,8 @@ pipeline {
         agent {label 'awsDeploy2'}
         steps {
             sh 'docker push sameenk/bankapp7'
-  }
-     }
+      }
+}
 
      stage('Init') {
        agent {label 'awsDeploy'}
