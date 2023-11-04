@@ -4,14 +4,7 @@ pipeline {
       DOCKERHUB_CREDENTIALS = credentials('sameenk-dockerhub')
       }
    stages {
-    stage ('Build') {
-      agent {label 'awsDeploy2'}
-      steps {
-          sh 'docker build -t sameenk/bankapp7 .'
-    }
-}
     stage ('Test') {
-      agent {label 'awsDeploy2'}
       steps {
         sh '''#!/bin/bash
         python3.7 -m venv test
@@ -31,17 +24,19 @@ pipeline {
        
       }
    }
-     
 
+    stage ('Build') {
+      steps {
+          sh 'docker build -t sameenk/bankapp7 .'
+    }
+}
      stage ('Login') {
-        agent {label 'awsDeploy2'}
         steps {
           sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
       }
 }
 
      stage ('Push') {
-        agent {label 'awsDeploy2'}
         steps {
             sh 'docker push sameenk/bankapp7'
       }
