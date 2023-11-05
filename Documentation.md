@@ -1,4 +1,11 @@
-#### Launching Jenkins Infrastructure with Terraform:
+#Purpose
+
+#System Diagram
+
+![Deployment 7 drawio](https://github.com/Sameen-k/Deployment7/assets/128739962/dd439f88-8cea-4685-bd48-efa9828a63eb)
+
+# Steps
+### Launching Jenkins Infrastructure with Terraform:
 1. The first terraform main.tf file is utilized to create the Jenkins infrastructure which includes 3 EC2 instances. There is a user-data script on that first main.tf file that installs Jenkins on the first instance and a second user-data script that installs terraform and some dependencies (see terraform.sh). When the third instance launched docker was installed manually and the following dependencies:
    
 ``default-jre, software-properties-common, add-apt-repository -y ppa:deadsnakes/ppa, python3.7, python3.7-venv, build-essential, libmysqlclient-dev, python3.7-dev``
@@ -12,7 +19,7 @@
 4. Lastly be sure to add the "Pipeline Keep Running" Jenkins plugin and the "Docker Pipeline" plugin.
 
 
-#### Init Terrraform - main.tf
+### Init Terrraform - main.tf
 In this instance, there are a few terraform files that are run in the "Init Terraform" folder. First is the main.tf file (this is not referring to the main.tf file from the Jenkins architecture).
 
 ```
@@ -193,7 +200,35 @@ output "alb_url" {
 
 this portion of the file defines the configuration for accepting incoming traffic on a specific port (80) and protocol (HTTP). It is responsible for "forwarding" this traffic to the designated target group. This output block defines an output variable called "alb_url" that provides the URL for the ALB created in the script. This URL is created along with the creation of the application load balancer, and this is how the application is accessed.
 
-#### Init Terrraform - VPC.tf
+### Init Terrraform - VPC.tf
 This file is straightforward, it's configuring a VPC, two public subnets, and two private subnets in each availability zone (US-east1a and US-east1b). There are 2 route tables, 1 private and 1 public. An internet gateway was configured as well as a NAT Gateway. Please refer to the VPC.tf in the "Init Terraform" folder to see more details. 
 
-#### Docker File: 
+### Docker File: 
+
+```
+FROM python:3.7
+
+RUN git clone https://github.com/Sameen-k/Deployment7.git
+
+WORKDIR Deployment7
+
+RUN pip install pip --upgrade
+
+RUN pip install -r requirements.txt
+
+RUN pip install mysqlclient
+
+RUN pip install gunicorn
+
+EXPOSE 8000
+
+ENTRYPOINT python -m gunicorn app:app -b 0.0.0.0
+```
+
+This is the docker file that was run to create the image for the container that will be created. In this docker file, the GitHub repo was cloned, dependencies were installed, the port was set for the application, and the application was launched. This docker file will be run, and the image that's created as a result will be pushed to Docker Hub and then later be pulled from Docker Hub to be used to create a container.
+
+### Jenkins Pipeline:
+
+![Screen Shot 2023-11-04 at 6 08 50 PM](https://github.com/Sameen-k/Deployment7/assets/128739962/3fbdf6df-e9aa-4b44-98c1-87c3d553ed72)
+
+This is an image of the Jenkins pipeline being successfully run. The test, build, login, and push are all carried out in Jenkins Agent2 (docker installed). The last few stages involve Jenkins Agent1 (terraform) to run the terraform files in the "Init Terraform" folder through the Init, plan, and apply stages. There is also a destroy stage that has been commented out that destroys all the main infrastructure 
