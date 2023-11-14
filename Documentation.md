@@ -1,6 +1,6 @@
-#Purpose
+# Purpose
 
-#System Diagram
+# System Diagram
 
 ![Deployment 7 drawio](https://github.com/Sameen-k/Deployment7/assets/128739962/dd439f88-8cea-4685-bd48-efa9828a63eb)
 
